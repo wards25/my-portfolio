@@ -1,0 +1,8 @@
+* {
+  box-sizing: border-box;
+}
+html, body {
+  scroll-padding-top: 5rem;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
