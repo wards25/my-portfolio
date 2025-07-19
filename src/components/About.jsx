@@ -1,10 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import edwardImg from "/src/myphoto.jpg"; // Replace with your actual path
 
 const About = () => {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { margin: "-300px" });
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Use different viewport margins based on screen size
+  const isInView = useInView(sectionRef, isMobile ? { margin: "0px" } : { margin: "-100px" });
 
   return (
     <motion.section
@@ -16,6 +27,7 @@ const About = () => {
       className="min-h-screen flex flex-col items-center justify-center px-4 py-10 space-y-10 bg-[#0d1117]"
     >
       <h2 className="text-xl md:text-2xl font-semibold text-white">About</h2>
+      
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-6 w-full max-w-3xl">
         {/* Terminal box with glow */}
         <div className="flex-1 p-1 bg-purple-500/20 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.5)]">
@@ -28,7 +40,7 @@ const About = () => {
             </div>
 
             {/* Terminal text */}
-            <div className="p-5 font-mono text-sm text-white whitespace-pre-wrap leading-relaxed">
+            <div className="p-4 sm:p-5 font-mono text-xs sm:text-sm text-white whitespace-pre-wrap leading-relaxed">
               <span className="text-green-400">➜</span>{" "}
               <span className="text-blue-400">about me</span>
               {"\n"}
@@ -47,16 +59,15 @@ const About = () => {
           </div>
         </div>
 
-        {/* Image block with equal height */}
+        {/* Image block - responsive sizing */}
         <div className="flex-1 flex items-center justify-center">
           <img
             src={edwardImg}
             alt="Edward"
-            className="h-full w-full max-h-[500px] object-cover rounded-2xl border-2 border-[#30363d] shadow-[0_0_40px_rgba(139,92,246,0.4)]"
+            className="w-full h-auto max-h-[300px] md:max-h-[500px] object-cover rounded-2xl border-2 border-[#30363d] shadow-[0_0_40px_rgba(139,92,246,0.4)]"
           />
         </div>
       </div>
-
     </motion.section>
   );
 };
