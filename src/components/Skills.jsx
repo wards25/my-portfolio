@@ -13,7 +13,8 @@ const techStack = [
     { name: "Git", src: "/src/git.png", type: "tool" },
     { name: "Github", src: "/src/github.png", type: "tool" },
     { name: "Bootstrap", src: "/src/bootstrap.png", type: "framework" },
-    { name: "Postman", src: "/src/postman.png", type: "tool" }
+    { name: "Postman", src: "/src/postman.png", type: "tool" },
+    { name: "Figma", src: "/src/figma.png", type: "tool" }
 ];
 
 const filterTabs = ["All", "Languages", "Frameworks", "Tools"];

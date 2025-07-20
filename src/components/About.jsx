@@ -5,7 +5,7 @@ import edwardImg from "/src/myphoto.jpg"; // Replace with your actual path
 const About = () => {
   const sectionRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -27,7 +27,7 @@ const About = () => {
       className="min-h-screen flex flex-col items-center justify-center px-4 py-10 space-y-10 bg-[#0d1117]"
     >
       <h2 className="text-xl md:text-2xl font-semibold text-white">About</h2>
-      
+
       <div className="flex flex-col md:flex-row items-stretch justify-center gap-6 w-full max-w-3xl">
         {/* Terminal box with glow */}
         <div className="flex-1 p-1 bg-purple-500/20 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.5)]">
@@ -42,19 +42,12 @@ const About = () => {
             {/* Terminal text */}
             <div className="p-4 sm:p-5 font-mono text-xs sm:text-sm text-white whitespace-pre-wrap leading-relaxed">
               <span className="text-green-400">➜</span>{" "}
-              <span className="text-blue-400">about me</span>
+              <span className="text-blue-400">About me</span>
               {"\n"}
-              Hello! I'm <span className="text-purple-400">Edward</span>, a passionate
-              web developer focused on building modern, responsive, and user-friendly
-              websites.{"\n\n"}
-              💻 Skills:
-              {"\n"} - JavaScript, PHP, Laravel, React, Tailwind CSS
-              {"\n"} - Database Management, API Integration
-              {"\n"} - UI/UX Design, Responsive Web Design
-              {"\n\n"}
-              📍 Based in the Philippines
-              {"\n"}
-              🎯 Goal: To build impactful digital solutions that solve real-world problems.
+              Hello! I'm <span className="text-purple-400">Edward John Del Barrio</span>, a passionate web developer dedicated to building modern, user-friendly websites. I specialize in back-end development, with a strong foundation in technologies like JavaScript, PHP, Slim Framework, and RESTful API.
+              I'm constantly learning new tools and frameworks to improve my craft and stay updated with the latest web trends.
+              {"\n"} {"\n"}
+              Outside of coding, I’m deeply interested in exploring nature, try hiking scenic trails, capturing stunning landscapes with photography, stargazing under dark skies, or simply relaxing in a quiet place that brings fresh air, discovery, and a deeper connection to the outdoors
             </div>
           </div>
         </div>
