@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaFacebook, FaEnvelope } from "react-icons/fa";
 
 export default function Hero({
-  strings = ["Web Developer", "Web Enthusiast"],
+  strings = ["Web Developer", "Web Enthusiast", "Backend Developer"],
   typeSpeed = 50,
   backSpeed = 30
 }) {

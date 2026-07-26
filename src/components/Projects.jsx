@@ -14,7 +14,7 @@ const projectList = [
     title: "F325 – Bad Order Management",
     description:
       "An internal inventory system built for RGC's F325 team to log and track bad orders (damaged or returned stock) from company branches. The system lets the team create pullout batches for the principal to collect defective items, streamlining what was previously a manual returns process.",
-    link: "#",
+    link: "https://f325.ramosco.net/",
     tags: ["PHP", "MySQL", "Inventory Management", "SSH", "Linux Deployment"],
     image: "/src/f325.png",
   },
@@ -22,7 +22,7 @@ const projectList = [
     title: "RGC Sales App – Mobile & Desktop (BMS)",
     description:
       "Contributor to a two-part Business Management System for Mercury branches: a mobile app used by branch staff for day-to-day sales, order suggestions, stock checks, attendance, and store surveys, and a desktop app for monitoring and analyzing BMS data company-wide. Managed deployment of both apps on a Linux server environment.",
-    link: "#",
+    link: "https://salesapp.ramosco.net/mobile/",
     tags: ["PHP","MySQL","Linux Deployment", "Web App", "Sales Monitoring", "API", "SSH"],
     image: "/src/rgcsales.png",
   },
