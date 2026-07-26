@@ -3,36 +3,79 @@ import { motion } from "framer-motion";
 
 const projectList = [
   {
-    title: "Operating Expense Monitoring System",
-    description: "A web-based system designed to monitor and manage business operating expenses, built with Slim PHP, Bootstrap, and integrated with a RESTful API for real-time data handling.",
+    title: "AssetTrack – IT Asset Inventory System",
+    description:
+      "A Laravel-based IT asset monitoring system for tracking company hardware across its lifecycle — status (working, defective, disposal, disposed), department assignment, purchase/deployment dates, and QR code scanning for quick lookup. Includes dashboard stats and exportable reports.",
     link: "#",
-    tags: ["Bootstrap","jQuery" ,"Slim PHP", "Mustache JS", "MySQL", "RESTful API"],
+    tags: ["Laravel", "PHP", "MySQL", "QR Code", "Blade"],
+    image: "/src/assettrack.png",
+  },
+  {
+    title: "F325 – Bad Order Management",
+    description:
+      "An internal inventory system built for RGC's F325 team to log and track bad orders (damaged or returned stock) from company branches. The system lets the team create pullout batches for the principal to collect defective items, streamlining what was previously a manual returns process.",
+    link: "#",
+    tags: ["PHP", "MySQL", "Inventory Management", "SSH", "Linux Deployment"],
+    image: "/src/f325.png",
+  },
+  {
+    title: "RGC Sales App – Mobile & Desktop (BMS)",
+    description:
+      "Contributor to a two-part Business Management System for Mercury branches: a mobile app used by branch staff for day-to-day sales, order suggestions, stock checks, attendance, and store surveys, and a desktop app for monitoring and analyzing BMS data company-wide. Managed deployment of both apps on a Linux server environment.",
+    link: "#",
+    tags: ["PHP","MySQL","Linux Deployment", "Web App", "Sales Monitoring", "API", "SSH"],
+    image: "/src/rgcsales.png",
+  },
+  {
+    title: "Operating Expense Monitoring System",
+    description:
+      "A web-based system designed to monitor and manage business operating expenses, built with Slim PHP, Bootstrap, and integrated with a RESTful API for real-time data handling.",
+    link: "#",
+    tags: [
+      "Bootstrap",
+      "jQuery",
+      "Slim PHP",
+      "Mustache JS",
+      "MySQL",
+      "RESTful API",
+    ],
     image: "/src/opex.png",
   },
   {
     title: "Animal Clinic Business Operation System",
-    description: "A comprehensive web-based system designed to streamline the daily operations of an animal clinic, including appointment scheduling, patient records, and inventory management built using pure PHP, MySQL, and modern frontend technologies.",
+    description:
+      "A comprehensive web-based system designed to streamline the daily operations of an animal clinic, including appointment scheduling, patient records, and inventory management built using pure PHP, MySQL, and modern frontend technologies.",
     link: "https://github.com/wards25/Animal-Clinic-Business-Operation-System.git",
     tags: ["HTML", "CSS", "JavaScript", "Bootstrap", "MySQL"],
     image: "/src/clinic.png",
   },
   {
     title: "Sample Blog Site",
-    description: "A minimal blog platform that allows users to read the publish posts. It features a clean and responsive UI with a REST API backend supporting user authentication, including secure login and signup functionalities. Ideal for learning full-stack development with real-time API integration.",
+    description:
+      "A minimal blog platform that allows users to read the publish posts. It features a clean and responsive UI with a REST API backend supporting user authentication, including secure login and signup functionalities. Ideal for learning full-stack development with real-time API integration.",
     link: "https://github.com/wards25/blog-site.git",
-    tags: ["Bootstrap","jQuery" ,"Slim PHP", "Mustache JS", "MySQL", "RESTful API"],
+    tags: [
+      "Bootstrap",
+      "jQuery",
+      "Slim PHP",
+      "Mustache JS",
+      "MySQL",
+      "RESTful API",
+    ],
     image: "/src/blog.png",
   },
   {
-    title: "El Cid’s Kitchen – Website UI Design",
-    description: "A sleek and modern restaurant website UI created in Figma for El Cid’s Kitchen. The design features a clean navigation bar, eye-catching food imagery, and a dark wood-themed background for a warm and appetizing aesthetic.",
+    title: "El Cid's Kitchen – Website UI Design",
+    description:
+      "A sleek and modern restaurant website UI created in Figma for El Cid's Kitchen. The design features a clean navigation bar, eye-catching food imagery, and a dark wood-themed background for a warm and appetizing aesthetic.",
     link: "https://www.figma.com/proto/kCzF8xX08Lfb9SyzZTainQ/Home?node-id=4-4",
     tags: ["Figma", "UI/UX Design", "Prototype"],
     image: "/src/elcids.png",
   },
   {
     title: "Point of Sale System",
-    description: "A basic Point of Sale system built using C#, designed for small businesses. It features essential functionalities such as product and sales management, along with a simple login and signup system for user access control. Perfect for learning or managing day-to-day sales in a straightforward desktop application.",
+    description:
+      "A basic Point of Sale system built using C#, designed for small businesses. It features essential functionalities such as product and sales management, along with a simple login and signup system for user access control. Perfect for learning or managing day-to-day sales in a straightforward desktop application.",
     link: "https://github.com/wards25/POS.git",
     tags: ["C#", "Windows Forms", "MySQL"],
     image: "/src/pos.png",
@@ -49,8 +92,10 @@ export default function Projects() {
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
-      <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Projects</h2>
-      
+      <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+        Projects
+      </h2>
+
       <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-10">
         {projectList.map((project, i) => (
           <motion.div
