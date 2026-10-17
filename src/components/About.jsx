@@ -1,75 +1,141 @@
-import React, { useRef, useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
-import edwardImg from "/src/myphoto.jpg"; // Replace with your actual path
+import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
+// Keep images inside src/assets and import them relatively.
+// Tip: compress the photo (or convert to .webp); portraits like this are often 1-3 MB.
+import edwardImg from "../assets/myphoto.jpg";
 
-const About = () => {
-  const sectionRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+const STACK = ["JavaScript", "PHP", "Slim Framework", "RESTful API"];
 
-  // Check if mobile on mount and resize
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+const display = { fontFamily: "'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif" };
+const mono = { fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace" };
 
-  // Use different viewport margins based on screen size
-  const isInView = useInView(
-    sectionRef,
-    isMobile ? { margin: "0px" } : { margin: "-100px" },
+// Slow, blurred color blobs that drift around: the "moving gradient" look.
+// Tailwind class names are written out in full so they aren't purged.
+const BLOBS = [
+  {
+    color: "bg-indigo-600/40",
+    box: "h-[28rem] w-[28rem] -left-24 top-0",
+    path: { x: [0, 120, -40, 0], y: [0, 60, 120, 0] },
+    duration: 22,
+  },
+  {
+    color: "bg-teal-500/30",
+    box: "h-[32rem] w-[32rem] -right-32 bottom-0",
+    path: { x: [0, -100, 40, 0], y: [0, -80, -20, 0] },
+    duration: 26,
+  },
+  {
+    color: "bg-orange-500/15",
+    box: "h-80 w-80 left-1/2 top-1/3",
+    path: { x: [0, 80, -60, 0], y: [0, -60, 40, 0] },
+    duration: 30,
+  },
+];
+
+function Aurora({ reduceMotion }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+    >
+      {BLOBS.map((b) => (
+        <motion.div
+          key={b.box}
+          className={`absolute rounded-full blur-3xl will-change-transform ${b.box} ${b.color}`}
+          animate={reduceMotion ? undefined : b.path}
+          transition={{ duration: b.duration, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
+    </div>
   );
+}
+
+export default function About() {
+  const reduceMotion = useReducedMotion();
+
+  // whileInView + once:true replaces the useInView / isMobile / resize listener setup.
+  // It animates one time and stays visible, instead of fading out and back in on every scroll.
+  const reveal = (delay = 0) => ({
+    initial: reduceMotion ? false : { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.25 },
+    transition: { duration: 0.6, ease: "easeOut", delay },
+  });
 
   return (
-    <motion.section
+    <section
       id="about"
-      ref={sectionRef}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-10 space-y-10 bg-[#0d1117]"
+      className="relative flex min-h-[calc(100vh-3.5rem)] scroll-mt-14 items-center overflow-hidden bg-gray-950 px-6 py-16 md:py-20"
     >
-      <h2 className="text-xl md:text-2xl font-semibold text-white">About</h2>
+      <Aurora reduceMotion={reduceMotion} />
+      <div className="relative z-10 mx-auto w-full max-w-5xl">
+        <motion.h2
+          {...reveal()}
+          style={display}
+          className="mb-10 text-3xl font-extrabold tracking-tight text-white md:text-4xl"
+        >
+          About
+        </motion.h2>
 
-      <div className="flex flex-col md:flex-row items-start justify-center gap-4 w-full max-w-2xl">
-        {/* Terminal box with glow */}
-        <div className="flex-1 p-1 bg-purple-500/20 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.5)]">
-          <div className="relative h-full bg-gradient-to-b from-[#0d1117] to-[#161b22] border border-[#30363d] shadow-inner rounded-xl w-full overflow-hidden backdrop-blur-md">
-            {/* Title bar */}
-            <div className="flex items-center gap-2 px-4 py-2 border-b border-[#30363d] bg-[#161b22]">
-              <span className="h-3 w-3 bg-red-500 rounded-full"></span>
-              <span className="h-3 w-3 bg-yellow-500 rounded-full"></span>
-              <span className="h-3 w-3 bg-green-500 rounded-full"></span>
+        <div className="grid items-stretch gap-8 md:grid-cols-[1.25fr_0.75fr] md:gap-12">
+          {/* Text card (same style as the Hero card) */}
+          <motion.div
+            {...reveal(0.1)}
+            className="flex flex-col overflow-hidden rounded-xl border border-slate-700 bg-gray-900/70 shadow-2xl backdrop-blur-md"
+          >
+            <div
+              style={mono}
+              className="border-b border-slate-700 px-5 py-3 text-xs text-slate-400"
+            >
+              about.md
             </div>
 
-            {/* Terminal text */}
-            <div className="p-4 sm:p-5 font-mono text-xs sm:text-sm text-white whitespace-pre-wrap leading-relaxed">
-              <span className="text-green-400">➜</span>{" "}
-              <span className="text-blue-400">About me</span>
-              {"\n"}
-              Hello! I'm{" "}
-              <span className="text-purple-400">Edward John Del Barrio</span>, a
-              passionate web developer dedicated to building modern,
-              user-friendly websites. I specialize in back-end development, with
-              a strong foundation in technologies like JavaScript, PHP, Slim
-              Framework, and RESTful API. I'm constantly learning new tools and
-              frameworks to improve my craft and stay updated with the latest
-              web trends.
+            <div className="flex flex-1 flex-col justify-center space-y-5 p-6 text-base leading-relaxed text-slate-300 md:p-8">
+              <p>
+                Hi, I'm{" "}
+                <strong className="font-semibold text-white">
+                  Edward John Del Barrio
+                </strong>
+                , experienced web developer who specializes in back-end development.
+              </p>
+              <p>
+                I build modern, user-friendly websites, and I keep learning new
+                tools and frameworks to sharpen my craft and stay current with
+                web trends.
+              </p>
+              <div>
+                <p className="mb-3">Most of my work uses:</p>
+                <ul className="flex flex-wrap gap-2">
+                  {STACK.map((tech) => (
+                    <li
+                      key={tech}
+                      style={mono}
+                      className="rounded-md border border-slate-600 px-3 py-1 text-sm text-slate-200"
+                    >
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Image block - responsive sizing */}
-        <div className="flex-1 flex items-center justify-center">
-          <img
-            src={edwardImg}
-            alt="Edward"
-            className="w-full h-auto max-h-[300px] md:max-h-[500px] object-cover rounded-2xl border-2 border-[#30363d] shadow-[0_0_40px_rgba(139,92,246,0.4)]"
-          />
+          {/* Photo */}
+          <motion.figure
+            {...reveal(0.2)}
+            className="relative mx-auto h-[26rem] w-full max-w-xs overflow-hidden rounded-xl border border-slate-700 md:h-auto md:max-w-none"
+          >
+            <img
+              src={edwardImg}
+              alt="Portrait of Edward John Del Barrio in a white barong with a blue graduation sash"
+              width="800"
+              height="1000"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover object-top"
+            />
+          </motion.figure>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
-};
-
-export default About;
+}

@@ -1,113 +1,208 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
-const techStack = [
-    { name: "HTML", src: "/src/html.png", type: "language" },
-    { name: "CSS", src: "/src/css.png", type: "language" },
-    { name: "JavaScript", src: "/src/js.png", type: "language" },
-    { name: "jQuery", src: "/src/jquery.png", type: "framework" },
-    { name: "PHP", src: "/src/php.png", type: "language" },
-    { name: "Laravel", src: "/src/laravel.png", type: "framework" },
-    { name: "Slim", src: "/src/slim-framework.png", type: "framework" },
-    { name: "MySQL", src: "/src/mysql.png", type: "tool" },
-    { name: "Git", src: "/src/git.png", type: "tool" },
-    { name: "Github", src: "/src/github.png", type: "tool" },
-    { name: "Bootstrap", src: "/src/bootstrap.png", type: "framework" },
-    { name: "Postman", src: "/src/postman.png", type: "tool" },
-    { name: "Figma", src: "/src/figma.png", type: "tool" },
-    { name: "Docker", src: "/src/docker.png", type: "tool" },
-    { name: "SSH", src: "/src/ssh.png", type: "tool" }
+// Change this one line if you move the icons (e.g. to "/icons" inside /public,
+// which is the safer place for production builds than "/src").
+const ICON_DIR = "/src";
+const icon = (file) => `${ICON_DIR}/${file}`;
+
+const TECH = [
+  { name: "HTML", src: icon("html.png"), type: "language" },
+  { name: "CSS", src: icon("css.png"), type: "language" },
+  { name: "JavaScript", src: icon("js.png"), type: "language" },
+  { name: "PHP", src: icon("php.png"), type: "language" },
+  { name: "jQuery", src: icon("jquery.png"), type: "framework" },
+  { name: "Laravel", src: icon("laravel.png"), type: "framework" },
+  { name: "Slim", src: icon("slim-framework.png"), type: "framework" },
+  { name: "Bootstrap", src: icon("bootstrap.png"), type: "framework" },
+  { name: "MySQL", src: icon("mysql.png"), type: "tool" },
+  { name: "Git", src: icon("git.png"), type: "tool" },
+  { name: "Github", src: icon("github.png"), type: "tool" },
+  { name: "Postman", src: icon("postman.png"), type: "tool" },
+  { name: "Figma", src: icon("figma.png"), type: "tool" },
+  { name: "Docker", src: icon("docker.png"), type: "tool" },
+  { name: "SSH", src: icon("ssh.png"), type: "tool" },
 ];
 
-const filterTabs = ["All", "Languages", "Frameworks", "Tools"];
+const TABS = [
+  { label: "All", type: null },
+  { label: "Languages", type: "language" },
+  { label: "Frameworks", type: "framework" },
+  { label: "Tools", type: "tool" },
+];
 
-const Skills = () => {
-    const [activeTab, setActiveTab] = useState("All");
+// Draft copy, based on what's in your Projects section. Edit freely.
+const FOCUS = [
+  {
+    title: "Backend & APIs",
+    text: "Server-side apps and RESTful APIs in PHP, built with Slim and Laravel.",
+    stack: "PHP · Slim · Laravel",
+  },
+  {
+    title: "Databases",
+    text: "MySQL schemas and queries behind inventory, sales, and expense systems.",
+    stack: "MySQL",
+  },
+  {
+    title: "Deployment",
+    text: "Getting apps live on Linux servers over SSH, including Docker setups.",
+    stack: "Linux · SSH · Docker",
+  },
+];
 
-    const filteredTech = techStack.filter((tech) => {
-        if (activeTab === "All") return true;
-        if (activeTab === "Languages") return tech.type === "language";
-        if (activeTab === "Frameworks") return tech.type === "framework";
-        if (activeTab === "Tools") return tech.type === "tool";
-        return false;
-    });
+const display = { fontFamily: "'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif" };
 
-    const loopedTech = [...filteredTech, ...filteredTech];
-    const isAllTab = activeTab === "All";
+const MASK =
+  "[-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]";
 
-    return (
-        <section id="skills" className="py-12 px-4 text-white text-center space-y-8">
-            <h2 className="text-2xl md:text-3xl font-semibold">Skills</h2>
+function Tile({ tech }) {
+  return (
+    <div className="group flex w-28 shrink-0 flex-col items-center gap-3">
+      <div className="flex h-28 w-28 items-center justify-center rounded-2xl border border-slate-700 bg-slate-800/60 transition duration-300 group-hover:-translate-y-1 group-hover:border-orange-400">
+        <img
+          src={tech.src}
+          alt=""
+          width="56"
+          height="56"
+          loading="lazy"
+          draggable="false"
+          className="h-14 w-14 object-contain"
+        />
+      </div>
+      <span className="text-sm text-slate-300 transition group-hover:text-white">
+        {tech.name}
+      </span>
+    </div>
+  );
+}
 
-            {/* Tabs */}
-            <div className="flex justify-center gap-4">
-                {filterTabs.map((tab) => (
-                    <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-1 border-b-2 transition-all duration-300 ${activeTab === tab
-                                ? "border-indigo-500 text-indigo-400 font-semibold"
-                                : "border-transparent hover:text-indigo-300"
-                            }`}
-                    >
-                        {tab}
-                    </button>
-                ))}
-            </div>
+// One scrolling strip. The list is repeated 6 times and the strip moves by half
+// of its width, so it loops seamlessly and stays full on wide screens.
+function MarqueeRow({ items, reverse = false }) {
+  return (
+    <div className={`overflow-hidden ${MASK}`}>
+      <div
+        className={`skills-marquee flex w-max ${reverse ? "skills-reverse" : ""}`}
+        style={{ "--dur": `${items.length * 7.5}s` }}
+      >
+        {Array.from({ length: 6 }, (_, copy) => (
+          <div key={copy} aria-hidden={copy > 0} className="flex gap-6 pr-6">
+            {items.map((tech) => (
+              <Tile key={tech.name} tech={tech} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-            {isAllTab ? (
-                /* Auto-sliding version — All tab only */
-                <div className="relative overflow-hidden w-full">
-                    <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-[#0d1117] to-transparent z-10" />
-                    <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#0d1117] to-transparent z-10" />
+export default function Skills() {
+  const [activeTab, setActiveTab] = useState("All");
+  const reduceMotion = useReducedMotion();
 
-                    <motion.div
-                        className="flex gap-10 w-max"
-                        animate={{ x: ["0%", "-50%"] }}
-                        transition={{
-                            duration: 20,
-                            ease: "linear",
-                            repeat: Infinity,
-                        }}
-                    >
-                        {loopedTech.map((tech, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center space-y-2 min-w-[80px]"
-                            >
-                                <img
-                                    src={tech.src}
-                                    alt={tech.name}
-                                    className="w-14 h-14 hover:scale-110 transition-transform duration-300"
-                                />
-                                <span className="text-sm">{tech.name}</span>
-                            </div>
-                        ))}
-                    </motion.div>
-                </div>
-            ) : (
-                /* Static centered version — Languages / Frameworks / Tools */
-                <div className="flex flex-wrap justify-center gap-8 px-2">
-                    {filteredTech.map((tech, index) => (
-                        <motion.div
-                            key={tech.name}
-                            className="flex flex-col items-center space-y-2 min-w-[80px]"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4, delay: index * 0.08 }}
-                        >
-                            <img
-                                src={tech.src}
-                                alt={tech.name}
-                                className="w-14 h-14 hover:scale-110 transition-transform duration-300"
-                            />
-                            <span className="text-sm">{tech.name}</span>
-                        </motion.div>
-                    ))}
-                </div>
-            )}
-        </section>
-    );
-};
+  const activeType = TABS.find((t) => t.label === activeTab)?.type;
+  const filtered = activeType ? TECH.filter((t) => t.type === activeType) : TECH;
 
-export default Skills;
+  const showMarquee = activeTab === "All" && !reduceMotion;
+  const half = Math.ceil(filtered.length / 2);
+
+  return (
+    <section id="skills" className="scroll-mt-14 bg-gray-900 px-6 py-16 md:py-24">
+      <style>{`
+        @keyframes skills-marquee { to { transform: translateX(-50%); } }
+        .skills-marquee { animation: skills-marquee var(--dur, 60s) linear infinite; }
+        .skills-reverse { animation-direction: reverse; }
+        .skills-marquee:hover { animation-play-state: paused; }
+      `}</style>
+
+      {/* Heading + tabs */}
+      <div className="mx-auto mb-14 flex max-w-5xl flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <motion.h2
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={display}
+          className="text-3xl font-extrabold tracking-tight text-white md:text-4xl"
+        >
+          Skills
+        </motion.h2>
+
+        <div
+          role="tablist"
+          aria-label="Filter skills"
+          className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-lg border border-slate-700 p-1"
+        >
+          {TABS.map(({ label }) => {
+            const active = activeTab === label;
+            return (
+              <button
+                key={label}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setActiveTab(label)}
+                className={`whitespace-nowrap rounded-md px-4 py-1.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-300 ${
+                  active
+                    ? "bg-orange-500 text-gray-900"
+                    : "text-slate-300 hover:text-white"
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Logos: two strips moving in opposite directions, or a grid for filtered tabs */}
+      {showMarquee ? (
+        <div className="space-y-6">
+          <MarqueeRow items={filtered.slice(0, half)} />
+          <MarqueeRow items={filtered.slice(half)} reverse />
+        </div>
+      ) : (
+        <div
+          key={activeTab}
+          className="mx-auto flex max-w-5xl flex-wrap justify-center gap-6"
+        >
+          {filtered.map((tech, i) => (
+            <motion.div
+              key={tech.name}
+              initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.05 }}
+            >
+              <Tile tech={tech} />
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* What I do: puts the logos in context */}
+      <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-3">
+        {FOCUS.map((f, i) => (
+          <motion.div
+            key={f.title}
+            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.1 }}
+            className="rounded-xl border border-slate-700 bg-gray-950/60 p-6"
+          >
+            <h3 style={display} className="text-lg font-bold text-white">
+              {f.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">{f.text}</p>
+            <p
+              className="mt-4 text-xs text-slate-400"
+              style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}
+            >
+              {f.stack}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}

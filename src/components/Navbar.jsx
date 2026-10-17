@@ -6,9 +6,36 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const navbarRef = useRef(null);
+  const barRef = useRef(null); // the logo/links row, without the mobile dropdown
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
+
+  // Scroll to a section so its top edge sits right under the navbar.
+  // Computing the position ourselves means stray CSS (scroll-padding, scroll-margin)
+  // can't push the section down, and the shrinking navbar is accounted for.
+  const goTo = (e, id) => {
+    e.preventDefault();
+    closeMenu();
+
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    // Once scrolled, the navbar has py-2 (8px top + 8px bottom) around the row.
+    const rowHeight = barRef.current?.offsetHeight ?? 32;
+    const navHeight = rowHeight + 16;
+
+    const top =
+      id === 'hero'
+        ? 0
+        : Math.max(0, target.getBoundingClientRect().top + window.scrollY - navHeight);
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+
+    // Keep the URL hash in sync, like a normal anchor link would.
+    window.history.replaceState(null, '', `#${id}`);
+  };
 
   // Handle scroll effect and active section
   useEffect(() => {
@@ -63,11 +90,11 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
+        <div ref={barRef} className="flex justify-between items-center">
           <a 
             href="#hero" 
             className="text-2xl font-bold"
-            onClick={closeMenu}
+            onClick={(e) => goTo(e, 'hero')}
           >
             dev.ward
           </a>
@@ -78,6 +105,7 @@ export default function Navbar() {
               <a 
                 key={item.id}
                 href={`#${item.id}`}
+                onClick={(e) => goTo(e, item.id)}
                 className={`hover:text-orange-400 transition-colors duration-200 relative group ${
                   activeSection === item.id ? 'text-orange-400' : ''
                 }`}
@@ -117,7 +145,7 @@ export default function Navbar() {
                   ? 'text-orange-400 bg-gray-700' 
                   : 'hover:text-orange-400'
               }`}
-              onClick={closeMenu}
+              onClick={(e) => goTo(e, item.id)}
             >
               {item.label}
             </a>
